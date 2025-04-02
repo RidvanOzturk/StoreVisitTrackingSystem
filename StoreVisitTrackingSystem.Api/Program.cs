@@ -1,11 +1,22 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StoreVisitTrackingSystem.Data;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.Implementations;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("StoreVisitTrackingConn");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 41)); 
+
+builder.Services.AddDbContext<TrackingContext>(options =>
+{
+    options.UseMySql(connectionString, serverVersion);
+});
+
 
 var secretKey = builder.Configuration["AppSettings:Secret"];
 var key = Encoding.ASCII.GetBytes(secretKey);

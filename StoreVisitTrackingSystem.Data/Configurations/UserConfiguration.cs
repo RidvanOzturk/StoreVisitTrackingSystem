@@ -25,6 +25,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                .HasMaxLength(20);
 
         builder.Property(u => u.CreatedAt)
+               .HasColumnType("datetime")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasMany(u => u.Visits)

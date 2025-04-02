@@ -21,6 +21,7 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
                .HasMaxLength(200);
 
         builder.Property(s => s.CreatedAt)
+               .HasColumnType("datetime")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasMany(s => s.Visits)

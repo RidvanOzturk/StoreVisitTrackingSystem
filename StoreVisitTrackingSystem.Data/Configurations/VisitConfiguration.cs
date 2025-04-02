@@ -14,6 +14,7 @@ public class VisitConfiguration : IEntityTypeConfiguration<Visit>
 
         builder.Property(v => v.VisitDate)
                .IsRequired()
+               .HasColumnType("datetime")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.Property(v => v.Status)

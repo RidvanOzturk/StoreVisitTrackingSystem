@@ -21,6 +21,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
                .HasMaxLength(50);
 
         builder.Property(p => p.CreatedAt)
+               .HasColumnType("datetime")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasMany(p => p.Photos)

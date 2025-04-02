@@ -17,6 +17,7 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
                .HasColumnType("LONGTEXT");
 
         builder.Property(p => p.UploadedAt)
+               .HasColumnType("datetime")
                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasOne(p => p.Visit)
