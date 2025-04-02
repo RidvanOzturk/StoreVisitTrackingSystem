@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StoreVisitTrackingSystem.Service.Contracts;
+using StoreVisitTrackingSystem.Service.Implementations;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,10 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 var secretKey = builder.Configuration["AppSettings:Secret"];
 var key = Encoding.ASCII.GetBytes(secretKey);
 
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddAuthentication(options =>
 {
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -27,6 +29,10 @@ builder.Services.AddAuthentication(opt =>
         ClockSkew = TimeSpan.Zero
     };
 });
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IVisitService, VisitService>();
 
 builder.Services.AddAuthorization();
 

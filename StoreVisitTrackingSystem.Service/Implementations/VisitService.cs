@@ -2,6 +2,6 @@
 
 namespace StoreVisitTrackingSystem.Service.Implementations;
 
-public class UserService : IUserService
+public class VisitService : IVisitService
 {
 }
