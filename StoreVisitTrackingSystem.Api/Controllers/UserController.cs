@@ -5,7 +5,8 @@ namespace StoreVisitTrackingSystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
+
     }
 }

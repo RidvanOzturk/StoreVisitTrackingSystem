@@ -32,4 +32,8 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StoreVisitTrackingSystem.Service\StoreVisitTrackingSystem.Service.csproj" />
+  </ItemGroup>
+
 </Project>
