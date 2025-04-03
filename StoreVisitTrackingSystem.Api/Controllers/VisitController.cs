@@ -34,4 +34,21 @@ public class VisitController(IVisitService visitService) : ControllerBase
         return Ok(visit);
     }
 
+    [HttpGet("{visitId}/photos")]
+    public async Task<IActionResult> UploadVisitPhotos([FromRoute] int visitId, CancellationToken cancellationToken = default)
+    {
+        //var visit = await visitService.GetVisitByIdAsync(visitId, cancellationToken);
+        //if (visit == null)
+        //{
+        //    return NotFound();
+        //}
+        return Ok();
+    }
+
+    [HttpPut("{visitId}/complete")]
+    public async Task<IActionResult> CompleteVisit([FromRoute] int visitId, CancellationToken cancellationToken = default)
+    {
+        await visitService.CompleteVisitAsync(visitId, cancellationToken);
+        return Ok();
+    }
 }

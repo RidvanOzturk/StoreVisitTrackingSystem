@@ -11,7 +11,7 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
 {
     public async Task CreateVisitAsync(VisitRequestDTO visitRequestDTO, CancellationToken cancellationToken)
     {
-        var visitEntity =  visitRequestDTO.Map();
+        var visitEntity = visitRequestDTO.Map();
         await trackingContext.Visits.AddAsync(visitEntity, cancellationToken);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
@@ -25,6 +25,16 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
     {
         return await trackingContext.Visits
             .AsNoTracking()
-            .FirstOrDefaultAsync(x=>x.Id == visitId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == visitId, cancellationToken);
+    }
+    public async Task CompleteVisitAsync(int visitId, CancellationToken cancellationToken)
+    {
+        var visit = await trackingContext.Visits
+            .FirstOrDefaultAsync(x => x.Id == visitId, cancellationToken);
+        if (visit != null)
+        {
+            visit.Status = VisitStatus.Completed;
+            await trackingContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
