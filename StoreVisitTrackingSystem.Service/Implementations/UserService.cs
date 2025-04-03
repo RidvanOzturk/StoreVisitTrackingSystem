@@ -7,7 +7,6 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class UserService(TrackingContext trackingContext) : IUserService
 {
-    //Passwordhash dönmemem lazım DTO model dönücem.
     public async Task<List<User>> GetAllUsersAsync()
     {
         return await trackingContext.Users

@@ -7,12 +7,11 @@ namespace StoreVisitTrackingSystem.Api.Controllers
     [ApiController]
     public class AuthController(IUserService userService) : ControllerBase
     {
-        [HttpGet("login")]
+        [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
-            //var users = await userService.GetUsers();
-           // return Ok(users);
-           return Ok();
+            var users = await userService.GetAllUsersAsync();
+            return Ok(users);
         }
     }
 }

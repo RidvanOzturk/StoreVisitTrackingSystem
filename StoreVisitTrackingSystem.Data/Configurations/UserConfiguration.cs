@@ -25,5 +25,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(v => v.User)
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasData(
+            new User { Id = 1, Username = "admin", Role = UserRole.Admin },
+            new User { Id = 2, Username = "user", Role = UserRole.Standard }
+        );
     }
 }
