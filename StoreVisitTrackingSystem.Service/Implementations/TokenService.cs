@@ -38,7 +38,6 @@ public class TokenService(IConfiguration configuration) : ITokenService
             expires: dateTimeNow.AddMinutes(tokenExpiryMinutes),
             signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
-
         string token = new JwtSecurityTokenHandler().WriteToken(jwt);
         if (string.IsNullOrEmpty(token))
         {
@@ -51,7 +50,6 @@ public class TokenService(IConfiguration configuration) : ITokenService
             TokenExpireDate = dateTimeNow.AddMinutes(tokenExpiryMinutes)
         });
     }
-
     public Task<string> GenerateRefreshTokenAsync()
     {
         var randomNumber = new byte[32];

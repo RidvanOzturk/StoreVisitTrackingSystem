@@ -15,7 +15,6 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
-
     public async Task<UserResponseModel> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(loginRequestDTO.Username))
@@ -28,8 +27,7 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
                 RefreshToken = null
             };
         }
-        var user = await trackingContext.Users
-            .FirstOrDefaultAsync(x=>x.Username == loginRequestDTO.Username, cancellationToken);
+        var user = await trackingContext.Users.FirstOrDefaultAsync(x=>x.Username == loginRequestDTO.Username, cancellationToken);
         if (user == null)
         {
             return new UserResponseModel
@@ -40,7 +38,6 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
                 RefreshToken = null
             };
         }
-
         var generatedToken = await tokenService.GenerateToken(new GenerateTokenRequestDTO { UserId = user.Id, Username = user.Username });
         var refreshTokenString = await tokenService.GenerateRefreshTokenAsync();
         var refreshTokenEntity = new RefreshToken
@@ -60,5 +57,4 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
             RefreshToken = refreshTokenString
         };
     }
-
 }

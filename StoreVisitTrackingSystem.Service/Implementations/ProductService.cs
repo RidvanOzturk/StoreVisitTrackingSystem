@@ -15,7 +15,6 @@ public class ProductService(TrackingContext trackingContext) : IProductService
         await trackingContext.Products.AddAsync(product, cancellationToken);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
-
     public async Task<List<Product>> GetProductsAsync(CancellationToken cancellationToken)
     {
         return await trackingContext.Products

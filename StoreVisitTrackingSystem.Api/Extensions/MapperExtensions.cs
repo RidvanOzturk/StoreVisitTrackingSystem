@@ -14,6 +14,18 @@ public static class MapperExtensions
             loginRequestModel.CreatedAt
         );
     }
+
+    public static VisitRequestDTO Map(this VisitRequestModel visitRequestModel)
+    {
+        return new VisitRequestDTO
+        (
+            visitRequestModel.UserId,
+            visitRequestModel.StoreId,
+            visitRequestModel.VisitDate,
+            visitRequestModel.VisitStatus
+        );
+    }
+
     public static StoreRequestDTO Map(this StoreRequestModel storeRequestModel)
     {
         return new StoreRequestDTO

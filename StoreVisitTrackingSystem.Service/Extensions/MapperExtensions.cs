@@ -15,6 +15,17 @@ public static class MapperExtensions
         };
     }
 
+    public static Visit Map(this VisitRequestDTO visitRequestDTO)
+    {
+        return new Visit
+        {
+            UserId = visitRequestDTO.UserId,
+            StoreId = visitRequestDTO.StoreId,
+            VisitDate = visitRequestDTO.VisitDate,
+            Status = visitRequestDTO.VisitStatus
+        };
+    }
+
     public static Store Map(this StoreRequestDTO storeRequestDTO)
     {
         return new Store
