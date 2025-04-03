@@ -21,6 +21,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion<string>()
             .HasMaxLength(50);
 
+        builder.Property(u => u.CreatedAt)
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
         builder.HasMany(u => u.Visits)
             .WithOne(v => v.User)
             .HasForeignKey(v => v.UserId)

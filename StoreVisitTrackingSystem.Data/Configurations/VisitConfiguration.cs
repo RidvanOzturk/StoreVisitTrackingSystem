@@ -16,6 +16,11 @@ public class VisitConfiguration : IEntityTypeConfiguration<Visit>
             .HasColumnType("datetime")
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+        builder.Property(v => v.Status)
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
         builder.HasOne(v => v.User)
             .WithMany(u => u.Visits)
             .HasForeignKey(v => v.UserId)
