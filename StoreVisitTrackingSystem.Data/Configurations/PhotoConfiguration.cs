@@ -13,21 +13,21 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Base64Image)
-               .IsRequired()
-               .HasColumnType("LONGTEXT");
+            .IsRequired()
+            .HasColumnType("longtext");
 
         builder.Property(p => p.UploadedAt)
-               .HasColumnType("datetime")
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasOne(p => p.Visit)
-               .WithMany(v => v.Photos)
-               .HasForeignKey(p => p.VisitId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(v => v.Photos)
+            .HasForeignKey(p => p.VisitId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(p => p.Product)
-               .WithMany(pr => pr.Photos)
-               .HasForeignKey(p => p.ProductId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(pr => pr.Photos)
+            .HasForeignKey(p => p.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

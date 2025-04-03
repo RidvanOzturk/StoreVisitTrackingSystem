@@ -13,20 +13,19 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Name)
-               .IsRequired()
-               .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(255);
 
         builder.Property(p => p.Category)
-               .IsRequired()
-               .HasMaxLength(50);
+            .HasMaxLength(100);
 
         builder.Property(p => p.CreatedAt)
-               .HasColumnType("datetime")
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasMany(p => p.Photos)
-               .WithOne(ph => ph.Product)
-               .HasForeignKey(ph => ph.ProductId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(photo => photo.Product)
+            .HasForeignKey(photo => photo.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

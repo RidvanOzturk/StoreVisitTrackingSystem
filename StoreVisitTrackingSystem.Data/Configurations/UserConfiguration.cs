@@ -13,24 +13,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
 
         builder.Property(u => u.Username)
-               .IsRequired()
-               .HasMaxLength(50);
-
-        builder.Property(u => u.PasswordHash)
-               .IsRequired()
-               .HasMaxLength(256);
+            .IsRequired()
+            .HasMaxLength(255);
 
         builder.Property(u => u.Role)
-               .IsRequired()
-               .HasMaxLength(20);
-
-        builder.Property(u => u.CreatedAt)
-               .HasColumnType("datetime")
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(50);
 
         builder.HasMany(u => u.Visits)
-               .WithOne(v => v.User)
-               .HasForeignKey(v => v.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(v => v.User)
+            .HasForeignKey(v => v.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

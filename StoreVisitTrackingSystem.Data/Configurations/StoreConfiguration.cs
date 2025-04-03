@@ -13,20 +13,19 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>
         builder.HasKey(s => s.Id);
 
         builder.Property(s => s.Name)
-               .IsRequired()
-               .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(255);
 
         builder.Property(s => s.Location)
-               .IsRequired()
-               .HasMaxLength(200);
+            .HasMaxLength(255);
 
         builder.Property(s => s.CreatedAt)
-               .HasColumnType("datetime")
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasMany(s => s.Visits)
-               .WithOne(v => v.Store)
-               .HasForeignKey(v => v.StoreId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(v => v.Store)
+            .HasForeignKey(v => v.StoreId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

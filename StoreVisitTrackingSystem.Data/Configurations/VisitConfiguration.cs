@@ -13,28 +13,23 @@ public class VisitConfiguration : IEntityTypeConfiguration<Visit>
         builder.HasKey(v => v.Id);
 
         builder.Property(v => v.VisitDate)
-               .IsRequired()
-               .HasColumnType("datetime")
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-        builder.Property(v => v.Status)
-               .IsRequired()
-               .HasMaxLength(20);
+            .HasColumnType("datetime")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         builder.HasOne(v => v.User)
-               .WithMany(u => u.Visits)
-               .HasForeignKey(v => v.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(u => u.Visits)
+            .HasForeignKey(v => v.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(v => v.Store)
-               .WithMany(s => s.Visits)
-               .HasForeignKey(v => v.StoreId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(s => s.Visits)
+            .HasForeignKey(v => v.StoreId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(v => v.Photos)
-               .WithOne(ph => ph.Visit)
-               .HasForeignKey(ph => ph.VisitId)
-               .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(p => p.Visit)
+            .HasForeignKey(p => p.VisitId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
