@@ -8,9 +8,9 @@ namespace StoreVisitTrackingSystem.Api.Controllers
     public class AuthController(IUserService userService) : ControllerBase
     {
         [HttpGet("users")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken = default)
         {
-            var users = await userService.GetAllUsersAsync();
+            var users = await userService.GetAllUsersAsync(cancellationToken);
             return Ok(users);
         }
     }

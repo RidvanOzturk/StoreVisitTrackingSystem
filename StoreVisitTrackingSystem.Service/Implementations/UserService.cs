@@ -7,10 +7,11 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class UserService(TrackingContext trackingContext) : IUserService
 {
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
         return await trackingContext.Users
             .AsNoTracking()
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
+
 }
