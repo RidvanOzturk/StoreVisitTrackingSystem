@@ -5,6 +5,16 @@ namespace StoreVisitTrackingSystem.Service.Extensions;
 
 public static class MapperExtensions
 {
+    public static User Map(this LoginRequestDTO loginRequestDTO)
+    {
+        return new User
+        {
+            Username = loginRequestDTO.Username,
+            Role = UserRole.Standard,
+            CreatedAt = DateTime.UtcNow,
+        };
+    }
+
     public static Store Map(this StoreRequestDTO storeRequestDTO)
     {
         return new Store
@@ -20,5 +30,14 @@ public static class MapperExtensions
         targetStore.Name = storeRequestDTO.Name;
         targetStore.Location = storeRequestDTO.Location;
         targetStore.CreatedAt = storeRequestDTO.CreatedAt;
+    }
+    public static Product Map(this ProductRequestDTO productRequestDTO)
+    {
+        return new Product
+        {
+            Name = productRequestDTO.Name,
+            Category = productRequestDTO.Category,
+            CreatedAt = productRequestDTO.CreatedAt,
+        };
     }
 }

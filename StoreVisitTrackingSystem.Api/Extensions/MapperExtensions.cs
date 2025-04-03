@@ -5,13 +5,31 @@ namespace StoreVisitTrackingSystem.Api.Extensions;
 
 public static class MapperExtensions
 {
-    public static StoreRequestDTO Map(this StoreRequestModel model)
+    public static LoginRequestDTO Map(this LoginRequestModel loginRequestModel)
+    {
+        return new LoginRequestDTO
+        (
+            loginRequestModel.Username,
+            loginRequestModel.Role.ToString(),
+            loginRequestModel.CreatedAt
+        );
+    }
+    public static StoreRequestDTO Map(this StoreRequestModel storeRequestModel)
     {
         return new StoreRequestDTO
-        {
-            Name = model.Name,
-            Location = model.Location,
-            CreatedAt = model.CreatedAt
-        };
+        (
+            storeRequestModel.Name,
+            storeRequestModel.Location,
+            storeRequestModel.CreatedAt
+        );
+    }
+    public static ProductRequestDTO Map(this ProductRequestModel productRequestModel)
+    {
+        return new ProductRequestDTO
+        (
+            productRequestModel.Name,
+            productRequestModel.Category,
+            productRequestModel.CreatedAt
+        );
     }
 }

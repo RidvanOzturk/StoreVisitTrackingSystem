@@ -8,6 +8,7 @@
         public DateTime CreatedAt { get; set; }
 
         public ICollection<Visit> Visits { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 
     public enum UserRole

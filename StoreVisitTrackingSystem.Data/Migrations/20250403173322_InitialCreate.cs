@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StoreVisitTrackingSystem.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,6 +68,30 @@ namespace StoreVisitTrackingSystem.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Token = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -133,11 +157,11 @@ namespace StoreVisitTrackingSystem.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Role", "Username" },
+                columns: new[] { "Id", "CreatedAt", "Role", "Username" },
                 values: new object[,]
                 {
-                    { 1, "Admin", "admin" },
-                    { 2, "Standard", "user" }
+                    { 1, new DateTime(2025, 4, 3, 17, 33, 22, 106, DateTimeKind.Utc).AddTicks(5746), "Admin", "admin" },
+                    { 2, new DateTime(2025, 4, 3, 17, 33, 22, 106, DateTimeKind.Utc).AddTicks(5749), "Standard", "user" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -149,6 +173,11 @@ namespace StoreVisitTrackingSystem.Data.Migrations
                 name: "IX_Photos_VisitId",
                 table: "Photos",
                 column: "VisitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Visits_StoreId",
@@ -166,6 +195,9 @@ namespace StoreVisitTrackingSystem.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Products");

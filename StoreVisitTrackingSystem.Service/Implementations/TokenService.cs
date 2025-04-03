@@ -32,8 +32,7 @@ public class TokenService(IConfiguration configuration) : ITokenService
             claims: new List<Claim>
             {
                 new Claim("UserId", request.UserId.ToString()),
-                new Claim("Name", request.Name),
-                new Claim("Mail", request.Mail),
+                new Claim("Username", request.Username),
             },
             notBefore: dateTimeNow,
             expires: dateTimeNow.AddMinutes(tokenExpiryMinutes),

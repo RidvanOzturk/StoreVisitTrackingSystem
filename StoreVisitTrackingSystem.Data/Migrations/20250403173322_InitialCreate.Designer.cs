@@ -12,8 +12,8 @@ using StoreVisitTrackingSystem.Data;
 namespace StoreVisitTrackingSystem.Data.Migrations
 {
     [DbContext(typeof(TrackingContext))]
-    [Migration("20250403133038_initialCreate")]
-    partial class initialCreate
+    [Migration("20250403173322_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,6 +85,37 @@ namespace StoreVisitTrackingSystem.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
+            modelBuilder.Entity("StoreVisitTrackingSystem.Data.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("StoreVisitTrackingSystem.Data.Entities.Store", b =>
                 {
                     b.Property<int>("Id")
@@ -144,14 +175,14 @@ namespace StoreVisitTrackingSystem.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 3, 17, 33, 22, 106, DateTimeKind.Utc).AddTicks(5746),
                             Role = "Admin",
                             Username = "admin"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 4, 3, 17, 33, 22, 106, DateTimeKind.Utc).AddTicks(5749),
                             Role = "Standard",
                             Username = "user"
                         });
@@ -209,6 +240,17 @@ namespace StoreVisitTrackingSystem.Data.Migrations
                     b.Navigation("Visit");
                 });
 
+            modelBuilder.Entity("StoreVisitTrackingSystem.Data.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("StoreVisitTrackingSystem.Data.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("StoreVisitTrackingSystem.Data.Entities.Visit", b =>
                 {
                     b.HasOne("StoreVisitTrackingSystem.Data.Entities.Store", "Store")
@@ -240,6 +282,8 @@ namespace StoreVisitTrackingSystem.Data.Migrations
 
             modelBuilder.Entity("StoreVisitTrackingSystem.Data.Entities.User", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Visits");
                 });
 

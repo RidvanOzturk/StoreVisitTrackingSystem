@@ -1,8 +1,8 @@
 ﻿namespace StoreVisitTrackingSystem.Service.DTOs;
 
-public class StoreRequestDTO
-{
-    public string Name { get; set; }
-    public string Location { get; set; }
-    public DateTime CreatedAt { get; set; }
-}
+public record StoreRequestDTO
+(
+    string Name,
+    string Location,
+    DateTime CreatedAt 
+);

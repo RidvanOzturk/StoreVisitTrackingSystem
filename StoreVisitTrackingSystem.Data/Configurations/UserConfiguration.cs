@@ -30,9 +30,26 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(u => u.RefreshTokens)
+       .WithOne(rt => rt.User)
+       .HasForeignKey(rt => rt.UserId)
+       .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasData(
-            new User { Id = 1, Username = "admin", Role = UserRole.Admin },
-            new User { Id = 2, Username = "user", Role = UserRole.Standard }
-        );
+    new User
+    {
+        Id = 1,
+        Username = "admin",
+        Role = UserRole.Admin,
+        CreatedAt = DateTime.UtcNow
+    },
+    new User
+    {
+        Id = 2,
+        Username = "user",
+        Role = UserRole.Standard,
+        CreatedAt = DateTime.UtcNow
+    }
+);
     }
 }

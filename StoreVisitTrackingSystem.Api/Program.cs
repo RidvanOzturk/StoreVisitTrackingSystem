@@ -45,6 +45,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddAuthorization();
 
