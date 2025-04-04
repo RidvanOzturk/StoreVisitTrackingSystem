@@ -22,7 +22,7 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
             return new UserResponseModel
             {
                 AccessTokenExpireDate = null,
-                AuthenticateResult = false,
+                isAuthenticated = false,
                 AuthToken = null,
                 RefreshToken = null
             };
@@ -33,7 +33,7 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
             return new UserResponseModel
             {
                 AccessTokenExpireDate = null,
-                AuthenticateResult = false,
+                isAuthenticated = false,
                 AuthToken = null,
                 RefreshToken = null
             };
@@ -52,7 +52,7 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
         return new UserResponseModel
         {
             AccessTokenExpireDate = generatedToken.TokenExpireDate,
-            AuthenticateResult = true,
+            isAuthenticated = true,
             AuthToken = generatedToken.Token,
             RefreshToken = refreshTokenString
         };

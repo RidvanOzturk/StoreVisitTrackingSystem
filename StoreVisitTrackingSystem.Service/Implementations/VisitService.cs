@@ -45,7 +45,7 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
     }
 
 
-    public async Task<Visit> GetVisitByIdAsync(int visitId, CancellationToken cancellationToken = default)
+    public async Task<Visit?> GetVisitByIdAsync(int visitId, CancellationToken cancellationToken = default)
     {
         return await trackingContext.Visits
             .AsNoTracking()

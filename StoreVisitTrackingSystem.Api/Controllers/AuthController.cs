@@ -21,7 +21,7 @@ public class AuthController(IUserService userService) : ControllerBase
     {
         var userEntity = loginRequestModel.Map();
         var user = await userService.LoginUserAsync(userEntity, cancellationToken);
-        if (!user.AuthenticateResult)
+        if (!user.isAuthenticated)
         {
             return BadRequest();
         }
