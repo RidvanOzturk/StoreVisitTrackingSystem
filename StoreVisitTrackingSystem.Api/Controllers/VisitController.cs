@@ -10,6 +10,8 @@ namespace StoreVisitTrackingSystem.Api.Controllers;
 [ApiController]
 public class VisitController(IVisitService visitService) : ControllerBase
 {
+  
+
     [HttpPost]
     public async Task<IActionResult> CreateVisit([FromBody] VisitRequestModel visitRequestModel, CancellationToken cancellationToken = default)
     {
@@ -18,15 +20,17 @@ public class VisitController(IVisitService visitService) : ControllerBase
         return Ok();
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllVisits(CancellationToken cancellationToken = default)
     {
-        var visits = await visitService.GetAllVisitsAsync(cancellationToken);
+        var userId = User.GetUserId();
+        var isAdmin = User.IsAdmin();
+        var visits = await visitService.GetAllVisitsAsync(userId, isAdmin, cancellationToken);
         return Ok(visits);
     }
 
-    //[Authorize]
+    [Authorize]
     [HttpGet("{visitId}")]
     public async Task<IActionResult> GetVisitById([FromRoute] int visitId, CancellationToken cancellationToken = default)
     {

@@ -18,22 +18,23 @@ public class TokenService(IConfiguration configuration) : ITokenService
         {
             throw new Exception("JWT Secret Key not found.");
         }
-
         int tokenExpiryMinutes = configuration.GetValue<int>("TokenSettings:ExpiresInMinutes");
         string issuer = configuration["TokenSettings:Issuer"];
         string audience = configuration["TokenSettings:Audience"];
 
         SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
         var dateTimeNow = DateTime.UtcNow;
+        var claims = new List<Claim>
+        {
+            new Claim("UserId", request.UserId.ToString()),
+            new Claim("Username", request.Username),
+            new Claim(ClaimTypes.Role, request.Role)
+        };
 
         JwtSecurityToken jwt = new JwtSecurityToken(
             issuer: issuer,
             audience: audience,
-            claims: new List<Claim>
-            {
-                new Claim("UserId", request.UserId.ToString()),
-                new Claim("Username", request.Username),
-            },
+            claims: claims,
             notBefore: dateTimeNow,
             expires: dateTimeNow.AddMinutes(tokenExpiryMinutes),
             signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)

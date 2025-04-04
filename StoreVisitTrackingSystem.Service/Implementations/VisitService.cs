@@ -15,11 +15,20 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
         await trackingContext.Visits.AddAsync(visitEntity, cancellationToken);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
-    public async Task<List<Visit>> GetAllVisitsAsync(CancellationToken cancellationToken)
+    public async Task<List<Visit>> GetAllVisitsAsync(int userId, bool isAdmin, CancellationToken cancellationToken)
     {
-        return await trackingContext.Visits
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var query = trackingContext.Visits
+        .Include(v => v.Store)
+        .Include(v => v.Photos)
+        .ThenInclude(p => p.Product)
+        .AsNoTracking();
+
+        if (!isAdmin)
+        {
+            query = query.Where(v => v.UserId == userId);
+        }
+
+        return await query.ToListAsync(cancellationToken);
     }
     public async Task<Visit> GetVisitByIdAsync(int visitId, CancellationToken cancellationToken)
     {

@@ -6,7 +6,6 @@ public class Visit
     public int UserId { get; set; }
     public int StoreId { get; set; }
     public DateTime VisitDate { get; set; }
-
     public VisitStatus Status { get; set; } 
 
     public User User { get; set; }

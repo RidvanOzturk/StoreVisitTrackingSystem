@@ -38,7 +38,7 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
                 RefreshToken = null
             };
         }
-        var generatedToken = await tokenService.GenerateToken(new GenerateTokenRequestDTO { UserId = user.Id, Username = user.Username });
+        var generatedToken = await tokenService.GenerateToken(new GenerateTokenRequestDTO { UserId = user.Id, Username = user.Username, Role = user.Role.ToString() });
         var refreshTokenString = await tokenService.GenerateRefreshTokenAsync();
         var refreshTokenEntity = new RefreshToken
         {
