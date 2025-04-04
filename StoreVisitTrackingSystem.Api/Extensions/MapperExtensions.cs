@@ -26,6 +26,16 @@ public static class MapperExtensions
         );
     }
 
+    public static PhotoRequestDTO Map(this PhotoRequestModel photoRequestModel)
+    {
+        return new PhotoRequestDTO
+        (
+            photoRequestModel.ProductId,
+            photoRequestModel.Base64Image,
+            photoRequestModel.UserId
+        );
+    }
+
     public static StoreRequestDTO Map(this StoreRequestModel storeRequestModel)
     {
         return new StoreRequestDTO

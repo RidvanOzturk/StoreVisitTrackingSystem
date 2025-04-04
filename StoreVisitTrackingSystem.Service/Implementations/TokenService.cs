@@ -11,7 +11,7 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class TokenService(IConfiguration configuration) : ITokenService
 {
-    public Task<GenerateTokenResponseDTO> GenerateToken(GenerateTokenRequestDTO request)
+    public async Task<GenerateTokenResponseDTO> GenerateTokenAsync(GenerateTokenRequestDTO request, CancellationToken cancellationToken = default)
     {
         var secretKey = configuration["AppSettings:Secret"];
         if (string.IsNullOrEmpty(secretKey))
@@ -45,18 +45,19 @@ public class TokenService(IConfiguration configuration) : ITokenService
             throw new Exception("JWT Token cannot be created.");
         }
 
-        return Task.FromResult(new GenerateTokenResponseDTO
+        return new GenerateTokenResponseDTO
         {
             Token = token,
             TokenExpireDate = dateTimeNow.AddMinutes(tokenExpiryMinutes)
-        });
+        };
     }
-    public Task<string> GenerateRefreshTokenAsync()
+
+    public string GenerateRefreshToken(CancellationToken cancellationToken = default)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
 
-        return Task.FromResult(Convert.ToBase64String(randomNumber));
+        return Convert.ToBase64String(randomNumber);
     }
 }

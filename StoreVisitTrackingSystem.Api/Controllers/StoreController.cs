@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
 using StoreVisitTrackingSystem.Api.Models;
 using StoreVisitTrackingSystem.Service.Contracts;
@@ -15,21 +13,21 @@ public class StoreController(IStoreService storeService) : ControllerBase
     //ADMIN ONLY WILL BE CHECKED
 
     [HttpGet("all")] 
-    public async Task<IActionResult> GetAllStores(CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAllStores(CancellationToken cancellationToken)
     {
         var stores = await storeService.GetAllStoresAsync(cancellationToken);
         return Ok(stores);
     }
 
     [HttpGet("{storeId}")]
-    public async Task<IActionResult> GetStoreById([FromRoute] int storeId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetStoreById([FromRoute] int storeId, CancellationToken cancellationToken)
     {
         var store = await storeService.GetStoreByIdAsync(storeId, cancellationToken);
         return Ok(store);
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateStore([FromBody] StoreRequestModel storeRequestModel, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateStore([FromBody] StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var store = storeRequestModel.Map();
         await storeService.CreateStoreAsync(store, cancellationToken);
@@ -37,7 +35,7 @@ public class StoreController(IStoreService storeService) : ControllerBase
     }
 
     [HttpPut("{storeId}")]
-    public async Task <IActionResult> UpdateStore([FromRoute] int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken = default)
+    public async Task <IActionResult> UpdateStore([FromRoute] int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
         if (!isStoreExist)
@@ -50,7 +48,7 @@ public class StoreController(IStoreService storeService) : ControllerBase
     }
 
     [HttpDelete("{storeId}")]
-    public async Task<IActionResult> DeleteStore([FromRoute] int storeId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> DeleteStore([FromRoute] int storeId, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
         if (!isStoreExist)

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
 using StoreVisitTrackingSystem.Api.Models;
 using StoreVisitTrackingSystem.Service.Contracts;
@@ -12,7 +11,7 @@ public class ProductController(IProductService productService) : ControllerBase
 {
     //[Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] ProductRequestModel productRequestModel, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateProduct([FromBody] ProductRequestModel productRequestModel, CancellationToken cancellationToken)
     {
         var product = productRequestModel.Map();
         await productService.CreateProductAsync(product, cancellationToken);
@@ -21,7 +20,7 @@ public class ProductController(IProductService productService) : ControllerBase
 
     //[Authorize(Roles = "Standart")]
     [HttpGet]
-    public async Task<IActionResult> GetAllProducts(CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAllProducts(CancellationToken cancellationToken)
     {
         var products = await productService.GetProductsAsync(cancellationToken);
         return Ok(products);

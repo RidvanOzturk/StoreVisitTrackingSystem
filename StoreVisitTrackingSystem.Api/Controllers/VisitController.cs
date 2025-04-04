@@ -10,10 +10,8 @@ namespace StoreVisitTrackingSystem.Api.Controllers;
 [ApiController]
 public class VisitController(IVisitService visitService) : ControllerBase
 {
-  
-
     [HttpPost]
-    public async Task<IActionResult> CreateVisit([FromBody] VisitRequestModel visitRequestModel, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateVisit([FromBody] VisitRequestModel visitRequestModel, CancellationToken cancellationToken)
     {
         var visit = visitRequestModel.Map();
         await visitService.CreateVisitAsync(visit, cancellationToken);
@@ -22,7 +20,7 @@ public class VisitController(IVisitService visitService) : ControllerBase
 
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetAllVisits(CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAllVisits(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
         var isAdmin = User.IsAdmin();
@@ -32,25 +30,26 @@ public class VisitController(IVisitService visitService) : ControllerBase
 
     [Authorize]
     [HttpGet("{visitId}")]
-    public async Task<IActionResult> GetVisitById([FromRoute] int visitId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetVisitById([FromRoute] int visitId, CancellationToken cancellationToken)
     {
         var visit = await visitService.GetVisitByIdAsync(visitId, cancellationToken);
         return Ok(visit);
     }
 
-    [HttpGet("{visitId}/photos")]
-    public async Task<IActionResult> UploadVisitPhotos([FromRoute] int visitId, CancellationToken cancellationToken = default)
+    [Authorize]
+    [HttpPost("{visitId}/photos")]
+    public async Task<IActionResult> UploadVisitPhotos([FromRoute] int visitId, [FromBody] PhotoRequestModel photoRequestModel, CancellationToken cancellationToken)
     {
-        //var visit = await visitService.GetVisitByIdAsync(visitId, cancellationToken);
-        //if (visit == null)
-        //{
-        //    return NotFound();
-        //}
-        return Ok();
+        photoRequestModel.UserId = User.GetUserId();
+        var photoEntity = photoRequestModel.Map();
+
+        await visitService.AddPhotoToVisitAsync(photoEntity, visitId, cancellationToken);
+
+        return Ok(new { Message = "Photo uploaded successfully." });
     }
 
     [HttpPut("{visitId}/complete")]
-    public async Task<IActionResult> CompleteVisit([FromRoute] int visitId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CompleteVisit([FromRoute] int visitId, CancellationToken cancellationToken)
     {
         await visitService.CompleteVisitAsync(visitId, cancellationToken);
         return Ok();
