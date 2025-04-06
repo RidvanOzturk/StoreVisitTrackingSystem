@@ -51,13 +51,4 @@ public class TokenService(IConfiguration configuration) : ITokenService
             TokenExpireDate = dateTimeNow.AddMinutes(tokenExpiryMinutes)
         };
     }
-
-    public string GenerateRefreshToken(CancellationToken cancellationToken = default)
-    {
-        var randomNumber = new byte[32];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(randomNumber);
-
-        return Convert.ToBase64String(randomNumber);
-    }
 }

@@ -9,17 +9,18 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class StoreService(TrackingContext trackingContext) : IStoreService
 {
-    public async Task<List<Store>> GetAllStoresAsync(CancellationToken cancellationToken = default)
+    public async Task<(List<Store> Stores, int TotalCount)> GetAllStoresAsync(int page, int pageSize, CancellationToken cancellationToken)
     {
-        return await trackingContext.Stores
-            .AsNoTracking()
+        var query = trackingContext.Stores.AsNoTracking();
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var stores = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
-    }
-    public async Task<Store?> GetStoreByIdAsync(int storeId, CancellationToken cancellationToken = default)
-    {
-        return await trackingContext.Stores
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == storeId, cancellationToken);
+
+        return (stores, totalCount);
     }
     public async Task CreateStoreAsync(StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
     {

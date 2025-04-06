@@ -1,4 +1,4 @@
-﻿namespace StoreVisitTrackingSystem.Api.Models;
+﻿namespace StoreVisitTrackingSystem.Api.Models.Requests;
 
 public class ProductRequestModel
 {

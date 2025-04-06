@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using StoreVisitTrackingSystem.Data.Entities;
+using StoreVisitTrackingSystem.Data.Entities.Enums;
 
 namespace StoreVisitTrackingSystem.Data.Configurations;
 
@@ -29,27 +30,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(v => v.User)
             .HasForeignKey(v => v.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(u => u.RefreshTokens)
-       .WithOne(rt => rt.User)
-       .HasForeignKey(rt => rt.UserId)
-       .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasData(
-    new User
-    {
-        Id = 1,
-        Username = "admin",
-        Role = UserRole.Admin,
-        CreatedAt = DateTime.UtcNow
-    },
-    new User
-    {
-        Id = 2,
-        Username = "user",
-        Role = UserRole.Standard,
-        CreatedAt = DateTime.UtcNow
-    }
-);
     }
 }

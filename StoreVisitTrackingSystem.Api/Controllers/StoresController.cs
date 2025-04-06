@@ -1,32 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
-using StoreVisitTrackingSystem.Api.Models;
+using StoreVisitTrackingSystem.Api.Models.Requests;
 using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
 
-//[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
-public class StoreController(IStoreService storeService) : ControllerBase
+public class StoresController(IStoreService storeService) : ControllerBase
 {
     //ADMIN ONLY WILL BE CHECKED
-
-    [HttpGet("all")] 
-    public async Task<IActionResult> GetAllStores(CancellationToken cancellationToken)
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetAllStores([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var stores = await storeService.GetAllStoresAsync(cancellationToken);
-        return Ok(stores);
+        var (stores, totalCount) = await storeService.GetAllStoresAsync(page, pageSize, cancellationToken);
+
+        var response = new
+        {
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize,
+            Data = stores
+        };
+
+        return Ok(response);
     }
 
-    [HttpGet("{storeId}")]
-    public async Task<IActionResult> GetStoreById([FromRoute] int storeId, CancellationToken cancellationToken)
-    {
-        var store = await storeService.GetStoreByIdAsync(storeId, cancellationToken);
-        return Ok(store);
-    }
-
-    [HttpPost("create")]
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
     public async Task<IActionResult> CreateStore([FromBody] StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var store = storeRequestModel.Map();
@@ -34,6 +37,7 @@ public class StoreController(IStoreService storeService) : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{storeId}")]
     public async Task <IActionResult> UpdateStore([FromRoute] int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
@@ -47,6 +51,7 @@ public class StoreController(IStoreService storeService) : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{storeId}")]
     public async Task<IActionResult> DeleteStore([FromRoute] int storeId, CancellationToken cancellationToken)
     {

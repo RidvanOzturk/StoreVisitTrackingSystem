@@ -16,10 +16,18 @@ public class ProductService(TrackingContext trackingContext) : IProductService
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetProductsAsync(CancellationToken cancellationToken = default)
+    public async Task<(List<Product> Products, int TotalCount)> GetAllProductsAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await trackingContext.Products
-            .AsNoTracking()
+        var query = trackingContext.Products.AsNoTracking();
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var products = await query
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return (products, totalCount);
     }
 }

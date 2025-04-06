@@ -1,20 +1,11 @@
 ﻿using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.DTOs;
+using StoreVisitTrackingSystem.Data.Entities.Enums;
 
 namespace StoreVisitTrackingSystem.Service.Extensions;
 
 public static class MapperExtensions
 {
-    public static User Map(this LoginRequestDTO loginRequestDTO)
-    {
-        return new User
-        {
-            Username = loginRequestDTO.Username,
-            Role = UserRole.Standard,
-            CreatedAt = DateTime.UtcNow,
-        };
-    }
-
     public static Visit Map(this VisitRequestDTO visitRequestDTO)
     {
         return new Visit
@@ -63,4 +54,5 @@ public static class MapperExtensions
             CreatedAt = productRequestDTO.CreatedAt,
         };
     }
+ 
 }

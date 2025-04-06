@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreVisitTrackingSystem.Data;
 using StoreVisitTrackingSystem.Data.Entities;
+using StoreVisitTrackingSystem.Data.Entities.Enums;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.DTOs;
 using StoreVisitTrackingSystem.Service.Extensions;
@@ -15,21 +16,29 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
         await trackingContext.Visits.AddAsync(visitEntity, cancellationToken);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
-    public async Task<List<Visit>> GetAllVisitsAsync(int userId, bool isAdmin, CancellationToken cancellationToken = default)
+    public async Task<(List<Visit> Visits, int TotalCount)> GetAllVisitsAsync(int userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = trackingContext.Visits
-        .Include(v => v.Store)
-        .Include(v => v.Photos)
-        .ThenInclude(p => p.Product)
-        .AsNoTracking();
+            .Include(v => v.Store)
+            .Include(v => v.Photos)
+                .ThenInclude(p => p.Product)
+            .AsQueryable();
 
         if (!isAdmin)
-        {
             query = query.Where(v => v.UserId == userId);
-        }
 
-        return await query.ToListAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var visits = await query
+            .OrderByDescending(v => v.VisitDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+        return (visits, totalCount);
     }
+
 
     public async Task AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
     {
@@ -45,12 +54,24 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
     }
 
 
-    public async Task<Visit?> GetVisitByIdAsync(int visitId, CancellationToken cancellationToken = default)
+    public async Task<Visit?> GetVisitByIdAsync(int visitId, int userId, bool isAdmin, CancellationToken cancellationToken = default)
     {
-        return await trackingContext.Visits
+        var visit = await trackingContext.Visits
+            .Include(v => v.Store)
+            .Include(v => v.Photos)
+                .ThenInclude(p => p.Product)
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == visitId, cancellationToken);
+            .FirstOrDefaultAsync(v => v.Id == visitId, cancellationToken);
+
+        if (visit == null)
+            return null;
+
+        if (!isAdmin && visit.UserId != userId)
+            return null;
+
+        return visit;
     }
+
     public async Task CompleteVisitAsync(int visitId, CancellationToken cancellationToken = default)
     {
         var visit = await trackingContext.Visits

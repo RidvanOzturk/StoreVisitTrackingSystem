@@ -5,12 +5,16 @@ using Microsoft.OpenApi.Models;
 using StoreVisitTrackingSystem.Data;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.Implementations;
+using FluentValidation;
 using System.Security.Claims;
 using System.Text;
+using StoreVisitTrackingSystem.Api.Models.Validators;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
 var connectionString = builder.Configuration.GetConnectionString("StoreVisitTrackingConn");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 41)); 
 
@@ -18,7 +22,6 @@ builder.Services.AddDbContext<TrackingContext>(options =>
 {
     options.UseMySql(connectionString, serverVersion);
 });
-
 
 var secretKey = builder.Configuration["AppSettings:Secret"];
 var key = Encoding.ASCII.GetBytes(secretKey);

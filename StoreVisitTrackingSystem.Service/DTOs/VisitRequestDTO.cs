@@ -1,4 +1,4 @@
-﻿using StoreVisitTrackingSystem.Data.Entities;
+﻿using StoreVisitTrackingSystem.Data.Entities.Enums;
 
 namespace StoreVisitTrackingSystem.Service.DTOs;
 

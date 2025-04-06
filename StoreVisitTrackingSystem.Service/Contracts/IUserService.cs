@@ -6,6 +6,5 @@ namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface IUserService
 {
-    Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken = default);
     Task<UserResponseModel> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default);
 }

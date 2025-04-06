@@ -3,6 +3,5 @@
 public record LoginRequestDTO
 (
      string Username,
-     string Role,
      DateTime CreatedAt
 );
