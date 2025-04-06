@@ -31,13 +31,20 @@ public class StoreService(TrackingContext trackingContext) : IStoreService
     public async Task UpdateStoreAsync(int storeId, StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
     {
         var updateStore = await trackingContext.Stores.FirstOrDefaultAsync(x => x.Id == storeId, cancellationToken);
-
+        if (updateStore is null)
+        {
+            throw new Exception("Store not found.");
+        }
         storeRequestDTO.Map(updateStore);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
     public async Task DeleteStoreAsync(int storeId, CancellationToken cancellationToken = default)
     {
         var store = await trackingContext.Stores.FirstOrDefaultAsync(x => x.Id == storeId, cancellationToken);
+        if (store is null)
+        {
+            throw new InvalidOperationException("Store not found.");
+        }
         trackingContext.Remove(store);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }

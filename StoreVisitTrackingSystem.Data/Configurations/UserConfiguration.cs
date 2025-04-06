@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using StoreVisitTrackingSystem.Data.Entities;
-using StoreVisitTrackingSystem.Data.Entities.Enums;
 
 namespace StoreVisitTrackingSystem.Data.Configurations;
 

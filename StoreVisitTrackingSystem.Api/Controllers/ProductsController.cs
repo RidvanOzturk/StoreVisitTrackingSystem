@@ -5,7 +5,6 @@ using StoreVisitTrackingSystem.Api.Models.Requests;
 using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
-//[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController(IProductService productService) : ControllerBase

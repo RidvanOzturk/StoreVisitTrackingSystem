@@ -1,6 +1,5 @@
 ﻿using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.DTOs;
-using StoreVisitTrackingSystem.Data.Entities.Enums;
 
 namespace StoreVisitTrackingSystem.Service.Extensions;
 

@@ -2,7 +2,7 @@
 
 public class LoginRequestModel
 {
-    public string Username { get; set; }
+    public required string Username { get; set; }
     public DateTime CreatedAt { get; set; }
 
 }

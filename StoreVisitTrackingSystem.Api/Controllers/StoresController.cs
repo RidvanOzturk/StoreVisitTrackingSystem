@@ -10,7 +10,6 @@ namespace StoreVisitTrackingSystem.Api.Controllers;
 [ApiController]
 public class StoresController(IStoreService storeService) : ControllerBase
 {
-    //ADMIN ONLY WILL BE CHECKED
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllStores([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)

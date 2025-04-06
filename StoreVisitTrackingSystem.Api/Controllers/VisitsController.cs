@@ -6,11 +6,11 @@ using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class VisitsController(IVisitService visitService) : ControllerBase
 {
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateVisit([FromBody] VisitRequestModel visitRequestModel, CancellationToken cancellationToken)
     {
@@ -20,7 +20,6 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         return Ok();
     }
 
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllVisits([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
@@ -35,7 +34,6 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         return Ok(pagedResponse);
     }
 
-    [Authorize]
     [HttpGet("{visitId}")]
     public async Task<IActionResult> GetVisitById([FromRoute] int visitId, CancellationToken cancellationToken)
     {

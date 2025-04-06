@@ -1,6 +1,5 @@
 ﻿using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.DTOs;
-using System.Threading.Tasks;
 
 namespace StoreVisitTrackingSystem.Service.Contracts;
 

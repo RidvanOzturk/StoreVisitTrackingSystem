@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using StoreVisitTrackingSystem.Data;
-using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.DTOs;
 
@@ -16,10 +14,10 @@ public class UserService(TrackingContext trackingContext, ITokenService tokenSer
         {
             throw new UnauthorizedAccessException("User not found.");
         }
-        var generatedToken = await tokenService.GenerateTokenAsync(new GenerateTokenRequestDTO
+        var generatedToken = tokenService.GenerateToken(new GenerateTokenRequestDTO
         { 
-            UserId = user.Id, 
-            Username = user.Username, 
+            UserId = user.Id,
+            Username = user.Username,
             Role = user.Role.ToString() 
         });
         return new UserResponseModel

@@ -1,17 +1,25 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StoreVisitTrackingSystem.Data;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.Implementations;
-using FluentValidation;
 using System.Security.Claims;
 using System.Text;
-using StoreVisitTrackingSystem.Api.Models.Validators;
-using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 20;
+        limiterOptions.Window = TimeSpan.FromSeconds(10);
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
@@ -23,7 +31,7 @@ builder.Services.AddDbContext<TrackingContext>(options =>
     options.UseMySql(connectionString, serverVersion);
 });
 
-var secretKey = builder.Configuration["AppSettings:Secret"];
+var secretKey = builder.Configuration["AppSettings:Secret"]!;
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -81,15 +89,36 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
+app.UseRateLimiter();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            var response = new
+            {
+                message = error.Error.Message,
+                stackTrace = error.Error.StackTrace
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    });
+});
 
 app.MapControllers();
 

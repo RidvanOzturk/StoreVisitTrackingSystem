@@ -2,7 +2,7 @@
 
 public record ProductRequestDTO
 (
-   string Name, 
-   string Category,
+   string? Name, 
+   string? Category,
    DateTime CreatedAt 
 );

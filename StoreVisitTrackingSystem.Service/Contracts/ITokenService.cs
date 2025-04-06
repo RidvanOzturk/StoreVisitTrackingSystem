@@ -4,5 +4,5 @@ namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface ITokenService
 {
-    Task<GenerateTokenResponseDTO> GenerateTokenAsync(GenerateTokenRequestDTO request, CancellationToken cancellationToken = default);
+    GenerateTokenResponseDTO GenerateToken(GenerateTokenRequestDTO request);
 }

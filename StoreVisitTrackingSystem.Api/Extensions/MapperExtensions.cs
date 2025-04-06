@@ -46,6 +46,7 @@ public static class MapperExtensions
             storeRequestModel.CreatedAt
         );
     }
+
     public static ProductRequestDTO Map(this ProductRequestModel productRequestModel)
     {
         return new ProductRequestDTO
