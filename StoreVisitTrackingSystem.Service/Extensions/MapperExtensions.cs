@@ -1,4 +1,5 @@
 ﻿using StoreVisitTrackingSystem.Data.Entities;
+using StoreVisitTrackingSystem.Data.Entities.Enums;
 using StoreVisitTrackingSystem.Service.DTOs;
 
 namespace StoreVisitTrackingSystem.Service.Extensions;
@@ -12,7 +13,7 @@ public static class MapperExtensions
             UserId = visitRequestDTO.UserId,
             StoreId = visitRequestDTO.StoreId,
             VisitDate = visitRequestDTO.VisitDate,
-            Status = visitRequestDTO.VisitStatus
+            Status = VisitStatus.InProgress
         };
     }
 

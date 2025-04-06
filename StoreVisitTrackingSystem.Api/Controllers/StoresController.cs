@@ -15,7 +15,6 @@ public class StoresController(IStoreService storeService) : ControllerBase
     public async Task<IActionResult> GetAllStores([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
         var (stores, totalCount) = await storeService.GetAllStoresAsync(page, pageSize, cancellationToken);
-
         var response = new
         {
             TotalCount = totalCount,

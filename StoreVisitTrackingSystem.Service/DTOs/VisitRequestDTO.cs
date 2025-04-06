@@ -6,6 +6,5 @@ public record VisitRequestDTO
 (
     int UserId, 
     int StoreId,
-    DateTime VisitDate,
-    VisitStatus VisitStatus
+    DateTime VisitDate
 );

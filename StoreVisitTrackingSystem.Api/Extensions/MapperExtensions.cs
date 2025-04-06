@@ -22,18 +22,17 @@ public static class MapperExtensions
         (
             userId,
             visitRequestModel.StoreId,
-            visitRequestModel.VisitDate,
-            visitRequestModel.VisitStatus
+            visitRequestModel.VisitDate
         );
     }
 
-    public static PhotoRequestDTO Map(this PhotoRequestModel photoRequestModel)
+    public static PhotoRequestDTO Map(this PhotoRequestModel photoRequestModel, int userId)
     {
         return new PhotoRequestDTO
         (
             photoRequestModel.ProductId,
             photoRequestModel.Base64Image,
-            photoRequestModel.UserId
+            userId
         );
     }
 

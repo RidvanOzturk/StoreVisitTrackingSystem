@@ -12,5 +12,5 @@ public class Visit
 
     public User? User { get; set; }
     public Store? Store { get; set; }
-    public ICollection<Photo>? Photos { get; set; }
+    public required ICollection<Photo> Photos { get; set; }
 }

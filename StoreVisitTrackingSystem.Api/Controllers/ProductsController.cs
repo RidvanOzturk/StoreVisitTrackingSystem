@@ -5,6 +5,7 @@ using StoreVisitTrackingSystem.Api.Models.Requests;
 using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class ProductsController(IProductService productService) : ControllerBase
@@ -17,7 +18,7 @@ public class ProductsController(IProductService productService) : ControllerBase
         await productService.CreateProductAsync(product, cancellationToken);
         return Ok();
     }
-
+    
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllProducts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
