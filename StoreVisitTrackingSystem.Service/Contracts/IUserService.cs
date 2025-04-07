@@ -4,5 +4,5 @@ namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface IUserService
 {
-    Task<UserResponseModel> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default);
+    Task<string?> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default);
 }

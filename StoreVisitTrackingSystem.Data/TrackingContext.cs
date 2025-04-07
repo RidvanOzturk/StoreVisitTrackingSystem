@@ -4,13 +4,8 @@ using System.Reflection;
 
 namespace StoreVisitTrackingSystem.Data;
 
-public class TrackingContext : DbContext
+public class TrackingContext(DbContextOptions<TrackingContext> options) : DbContext(options)
 {
-    public TrackingContext(DbContextOptions<TrackingContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<User> Users { get; set; }
     public DbSet<Store> Stores { get; set; }
     public DbSet<Product> Products { get; set; }

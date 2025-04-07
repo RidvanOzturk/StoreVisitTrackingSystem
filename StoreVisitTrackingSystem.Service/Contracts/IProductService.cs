@@ -1,10 +1,9 @@
-﻿using StoreVisitTrackingSystem.Data.Entities;
-using StoreVisitTrackingSystem.Service.DTOs;
+﻿using StoreVisitTrackingSystem.Service.DTOs;
 
 namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface IProductService
 {
     Task CreateProductAsync(ProductRequestDTO productRequestDTO, CancellationToken cancellationToken = default);
-    Task<(List<Product> Products, int TotalCount)> GetAllProductsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+    Task<PaginationDTO<ProductDTO>> GetAllProductsAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 }

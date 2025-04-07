@@ -1,7 +1,7 @@
 ﻿namespace StoreVisitTrackingSystem.Api.Models.Requests;
 
-public class PhotoRequestModel
-{
-    public int ProductId { get; set; }
-    public string? Base64Image { get; set; }
-}
+public record PhotoRequestModel
+(
+    int ProductId,
+    string Base64Image
+);

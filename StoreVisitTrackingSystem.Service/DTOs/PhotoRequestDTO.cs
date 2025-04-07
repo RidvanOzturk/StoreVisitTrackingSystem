@@ -3,6 +3,6 @@
 public record PhotoRequestDTO
 (
     int ProductId,
-    string? Base64Image,
+    string Base64Image,
     int UserId
 );

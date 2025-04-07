@@ -8,11 +8,19 @@ public class ProductRequestModelValidator : AbstractValidator<ProductRequestMode
     public ProductRequestModelValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Product name is required.")
-            .MaximumLength(100);
+            .NotEmpty()
+            .WithMessage("Product name is required.");
+
+        RuleFor(x => x.Name)
+            .MaximumLength(100)
+            .WithErrorCode("Exceeds maximum length.");
 
         RuleFor(x => x.Category)
-            .NotEmpty().WithMessage("Category is required.")
-            .MaximumLength(100);
+            .NotEmpty()
+            .WithMessage("Category is required.");
+
+        RuleFor(x => x.Category)
+            .MaximumLength(100)
+            .WithMessage("Exceeds maximum length.");
     }
 }

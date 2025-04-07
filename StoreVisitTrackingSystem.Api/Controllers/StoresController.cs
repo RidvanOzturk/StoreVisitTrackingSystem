@@ -6,6 +6,7 @@ using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
 
+
 [Route("api/[controller]")]
 [ApiController]
 public class StoresController(IStoreService storeService) : ControllerBase
@@ -14,21 +15,14 @@ public class StoresController(IStoreService storeService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllStores([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var (stores, totalCount) = await storeService.GetAllStoresAsync(page, pageSize, cancellationToken);
-        var response = new
-        {
-            TotalCount = totalCount,
-            Page = page,
-            PageSize = pageSize,
-            Data = stores
-        };
-
+        var pagination = await storeService.GetAllStoresAsync(page, pageSize, cancellationToken);
+        var response = pagination.Map();
         return Ok(response);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> CreateStore([FromBody] StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateStore(StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var store = storeRequestModel.Map();
         await storeService.CreateStoreAsync(store, cancellationToken);
@@ -37,7 +31,7 @@ public class StoresController(IStoreService storeService) : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{storeId}")]
-    public async Task <IActionResult> UpdateStore([FromRoute] int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
+    public async Task <IActionResult> UpdateStore(int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
         if (!isStoreExist)
@@ -51,7 +45,7 @@ public class StoresController(IStoreService storeService) : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{storeId}")]
-    public async Task<IActionResult> DeleteStore([FromRoute] int storeId, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteStore(int storeId, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
         if (!isStoreExist)

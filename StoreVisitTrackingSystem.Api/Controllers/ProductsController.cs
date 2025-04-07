@@ -12,7 +12,7 @@ public class ProductsController(IProductService productService) : ControllerBase
 {
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] ProductRequestModel productRequestModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProduct(ProductRequestModel productRequestModel, CancellationToken cancellationToken)
     {
         var product = productRequestModel.Map();
         await productService.CreateProductAsync(product, cancellationToken);
@@ -23,12 +23,8 @@ public class ProductsController(IProductService productService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllProducts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var (products, totalCount) = await productService.GetAllProductsAsync(page, pageSize, cancellationToken);
-
-        var responseModels = products.Select(p => p.ToResponseModel()).ToList();
-
-        var pagedResponse = responseModels.ToPagedResponseModel(totalCount, page, pageSize);
-
-        return Ok(pagedResponse);
+        var pagination = await productService.GetAllProductsAsync(page, pageSize, cancellationToken);
+        var response = pagination.Map();
+        return Ok(response);
     }
 }

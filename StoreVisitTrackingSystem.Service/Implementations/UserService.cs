@@ -7,24 +7,24 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class UserService(TrackingContext trackingContext, ITokenService tokenService) : IUserService
 {
-    public async Task<UserResponseModel> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<string?> LoginUserAsync(LoginRequestDTO loginRequestDTO, CancellationToken cancellationToken = default)
     {
-        var user = await trackingContext.Users.AsNoTracking().FirstOrDefaultAsync(x=>x.Username == loginRequestDTO.Username, cancellationToken);
+        var user = await trackingContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Username == loginRequestDTO.Username, cancellationToken);
+
         if (user == null)
         {
-            throw new UnauthorizedAccessException("User not found.");
+            return null;
         }
-        var generatedToken = tokenService.GenerateToken(new GenerateTokenRequestDTO
-        { 
+
+        var tokenRequest = new TokenRequest
+        {
             UserId = user.Id,
             Username = user.Username,
-            Role = user.Role.ToString() 
-        });
-        return new UserResponseModel
-        {
-            AccessTokenExpireDate = generatedToken.TokenExpireDate,
-            isAuthenticated = true,
-            AuthToken = generatedToken.Token,
+            Role = user.Role.ToString()
         };
+
+        var generatedToken = tokenService.GenerateToken(tokenRequest);
+
+        return generatedToken;
     }
 }

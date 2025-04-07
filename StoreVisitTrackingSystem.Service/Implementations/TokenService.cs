@@ -10,45 +10,40 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class TokenService(IConfiguration configuration) : ITokenService
 {
-    public GenerateTokenResponseDTO GenerateToken(GenerateTokenRequestDTO request)
+    public string GenerateToken(TokenRequest request)
     {
-        var secretKey = configuration["AppSettings:Secret"];
-        if (string.IsNullOrEmpty(secretKey))
-            throw new Exception("JWT Secret Key not found.");
-
+        var secretKey = configuration.GetValue<string>("TokenSettings:Secret");
         int tokenExpiryMinutes = configuration.GetValue<int>("TokenSettings:ExpiresInMinutes");
+        var issuer = configuration.GetValue<string>("TokenSettings:Issuer");
+        var audience = configuration.GetValue<string>("TokenSettings:Audience");
 
-        string issuer = configuration["TokenSettings:Issuer"] ?? throw new Exception("Issuer is missing");
-        string audience = configuration["TokenSettings:Audience"] ?? throw new Exception("Audience is missing");
+        ArgumentException.ThrowIfNullOrWhiteSpace(secretKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(issuer);
+        ArgumentException.ThrowIfNullOrWhiteSpace(audience);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tokenExpiryMinutes);
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-        var now = DateTime.UtcNow;
 
         var claims = new List<Claim>
-    {
-        new Claim("UserId", request.UserId.ToString()),
-        new Claim("Username", request.Username),
-        new Claim(ClaimTypes.Role, request.Role)
-    };
+        {
+            new Claim(nameof(request.UserId), request.UserId.ToString()),
+            new Claim(nameof(request.Username), request.Username),
+            new Claim(ClaimTypes.Role, request.Role)
+        };
 
         var jwt = new JwtSecurityToken(
             issuer: issuer,
             audience: audience,
             claims: claims,
-            notBefore: now,
-            expires: now.AddMinutes(tokenExpiryMinutes),
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddMinutes(tokenExpiryMinutes),
             signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
         );
 
-        string token = new JwtSecurityTokenHandler().WriteToken(jwt);
-        if (string.IsNullOrEmpty(token))
-            throw new Exception("JWT Token cannot be created.");
+        var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-        return new GenerateTokenResponseDTO
-        {
-            Token = token,
-            TokenExpireDate = now.AddMinutes(tokenExpiryMinutes)
-        };
+        ArgumentException.ThrowIfNullOrWhiteSpace(token);
+
+        return token;
     }
-
 }

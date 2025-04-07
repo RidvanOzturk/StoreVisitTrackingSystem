@@ -1,7 +1,8 @@
 ﻿namespace StoreVisitTrackingSystem.Service.DTOs;
 
-public record ProductRequestDTO
+public record StoreDTO
 (
+   int Id,
    string Name, 
-   string Category
+   string Location
 );

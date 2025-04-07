@@ -11,8 +11,7 @@ public static class MapperExtensions
     {
         return new LoginRequestDTO
         (
-            loginRequestModel.Username,
-            loginRequestModel.CreatedAt
+            loginRequestModel.Username
         );
     }
 
@@ -41,8 +40,7 @@ public static class MapperExtensions
         return new StoreRequestDTO
         (
             storeRequestModel.Name,
-            storeRequestModel.Location,
-            storeRequestModel.CreatedAt
+            storeRequestModel.Location
         );
     }
 
@@ -51,63 +49,49 @@ public static class MapperExtensions
         return new ProductRequestDTO
         (
             productRequestModel.Name,
-            productRequestModel.Category,
-            productRequestModel.CreatedAt
+            productRequestModel.Category
         );
     }
 
-    public static VisitResponseModel ToResponseModel(this Visit visit)
+    public static VisitResponseModel Map(this Visit visit)
     {
         return new VisitResponseModel
-        {
-            Id = visit.Id,
-            VisitDate = visit.VisitDate,
-            Status = visit.Status.ToString(),
-            Store = visit.Store?.ToResponseModel(),
-            Photos = visit.Photos?.Select(p => p.ToResponseModel()).ToList() ?? []
-        };
+        (
+            visit.Id,
+            visit.VisitDate,
+            visit.Status.ToString(),
+            visit.Store?.Map(),
+            visit.Photos?.Select(p => p.Map()).ToList() ?? []
+        );
     }
 
-    public static StoreResponseModel ToResponseModel(this Store store)
+    public static StoreResponseModel Map(this Store store)
     {
         return new StoreResponseModel
-        {
-            Id = store.Id,
-            Name = store.Name,
-            Location = store.Location
-        };
+        (
+            store.Id,
+            store.Name,
+            store.Location
+        );
     }
 
-    public static PhotoResponseModel ToResponseModel(this Photo photo)
+    public static PhotoResponseModel Map(this Photo photo)
     {
         return new PhotoResponseModel
-        {
-            Id = photo.Id,
-            Base64Image = photo.Base64Image,
-            UploadedAt = photo.UploadedAt,
-            Product = photo.Product?.ToResponseModel()
-        };
+        (
+            photo.Id,
+            photo.Base64Image,
+            photo.UploadedAt,
+            null
+        ); // TODO
     }
 
-    public static ProductResponseModel ToResponseModel(this Product product)
-    {
-        return new ProductResponseModel
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Category = product.Category,
-            CreatedAt = product.CreatedAt,
-        };
-    }
-
-    public static PagedResponseModel<T> ToPagedResponseModel<T>(this List<T> data, int totalCount, int page, int pageSize)
+    public static PagedResponseModel<T> Map<T>(this PaginationDTO<T> pagination)
     {
         return new PagedResponseModel<T>
-        {
-            Data = data,
-            TotalCount = totalCount,
-            Page = page,
-            PageSize = pageSize
-        };
+        (
+            pagination.Data,
+            pagination.TotalCount
+        );
     }
 }

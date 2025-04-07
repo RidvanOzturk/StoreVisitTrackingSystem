@@ -8,9 +8,11 @@ public class VisitRequestModelValidator : AbstractValidator<VisitRequestModel>
     public VisitRequestModelValidator()
     {
         RuleFor(x => x.StoreId)
-            .GreaterThan(0).WithMessage("StoreId must be greater than 0.");
+            .GreaterThan(0)
+            .WithMessage("StoreId must be greater than 0.");
 
         RuleFor(x => x.VisitDate)
-            .NotEmpty().WithMessage("Visit date is required.");
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("Visit date cannot be in the future.");
     }
 }

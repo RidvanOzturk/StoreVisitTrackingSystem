@@ -4,5 +4,5 @@ namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface ITokenService
 {
-    GenerateTokenResponseDTO GenerateToken(GenerateTokenRequestDTO request);
+    string GenerateToken(TokenRequest request);
 }

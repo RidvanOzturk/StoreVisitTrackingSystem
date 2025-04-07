@@ -1,9 +1,7 @@
-﻿using StoreVisitTrackingSystem.Data.Entities.Enums;
+﻿namespace StoreVisitTrackingSystem.Api.Models.Requests;
 
-namespace StoreVisitTrackingSystem.Api.Models.Requests;
-
-public class VisitRequestModel
-{
-    public int StoreId { get; set; }
-    public DateTime VisitDate { get; set; }
-}
+public record VisitRequestModel
+(
+    int StoreId,
+    DateTime VisitDate
+);

@@ -10,10 +10,16 @@ namespace StoreVisitTrackingSystem.Api.Controllers;
 public class AuthController(IUserService userService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> LoginUser([FromBody] LoginRequestModel loginRequestModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> LoginUser(LoginRequestModel loginRequestModel, CancellationToken cancellationToken)
     {
         var userEntity = loginRequestModel.Map();
         var user = await userService.LoginUserAsync(userEntity, cancellationToken);
+
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
         return Ok(user);
     }
 }

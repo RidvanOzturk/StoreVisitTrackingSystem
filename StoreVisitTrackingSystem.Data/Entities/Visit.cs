@@ -10,7 +10,7 @@ public class Visit
     public DateTime VisitDate { get; set; }
     public VisitStatus Status { get; set; }  
 
-    public User? User { get; set; }
-    public Store? Store { get; set; }
-    public required ICollection<Photo> Photos { get; set; }
+    public virtual User? User { get; set; }
+    public virtual Store? Store { get; set; }
+    public virtual List<Photo> Photos { get; set; } = [];
 }

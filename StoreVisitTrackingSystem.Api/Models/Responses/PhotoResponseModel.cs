@@ -1,9 +1,11 @@
-﻿namespace StoreVisitTrackingSystem.Api.Models.Responses;
+﻿using StoreVisitTrackingSystem.Service.DTOs;
 
-public class PhotoResponseModel
-{
-    public int Id { get; set; }
-    public string? Base64Image { get; set; }
-    public DateTime UploadedAt { get; set; }
-    public ProductResponseModel? Product { get; set; }
-}
+namespace StoreVisitTrackingSystem.Api.Models.Responses;
+
+public record PhotoResponseModel
+(
+    int Id,
+    string? Base64Image,
+    DateTime UploadedAt,
+    PagedResponseModel<ProductDTO>? Product
+);

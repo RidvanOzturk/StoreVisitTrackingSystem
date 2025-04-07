@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("fixed", limiterOptions =>
@@ -20,18 +22,23 @@ builder.Services.AddRateLimiter(options =>
         limiterOptions.Window = TimeSpan.FromSeconds(10);
     });
 });
+
 builder.Services.AddControllers();
+
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
-var connectionString = builder.Configuration.GetConnectionString("StoreVisitTrackingConn");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 41)); 
+
+var connectionString = builder.Configuration.GetConnectionString("StoreVisitContext");
 
 builder.Services.AddDbContext<TrackingContext>(options =>
 {
-    options.UseMySql(connectionString, serverVersion);
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
-var secretKey = builder.Configuration["AppSettings:Secret"]!;
+var secretKey = builder.Configuration.GetValue<string>("TokenSettings:Secret");
+
+ArgumentException.ThrowIfNullOrWhiteSpace(secretKey);
+
 var key = Encoding.ASCII.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -43,8 +50,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["TokenSettings:Issuer"],
-            ValidAudience = builder.Configuration["TokenSettings:Audience"],
+            ValidIssuer = builder.Configuration.GetValue<string>("TokenSettings:Issuer"),
+            ValidAudience = builder.Configuration.GetValue<string>("TokenSettings:Audience"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
             ClockSkew = TimeSpan.Zero,
             NameClaimType = ClaimTypes.NameIdentifier,
@@ -89,7 +96,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
 app.UseRateLimiter();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -97,28 +106,27 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
 app.UseExceptionHandler(exceptionHandlerApp =>
 {
     exceptionHandlerApp.Run(async context =>
     {
         context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
 
-        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        var error = context.Features.Get<IExceptionHandlerFeature>();
         if (error != null)
         {
             var response = new
             {
-                message = error.Error.Message,
-                stackTrace = error.Error.StackTrace
+                message = error.Error.Message
             };
 
             await context.Response.WriteAsJsonAsync(response);
         }
     });
 });
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -5,7 +5,7 @@ namespace StoreVisitTrackingSystem.Service.Contracts;
 
 public interface IStoreService
 {
-    Task<(List<Store> Stores, int TotalCount)> GetAllStoresAsync(int page, int pageSize, CancellationToken cancellationToken);
+    Task<PaginationDTO<StoreDTO>> GetAllStoresAsync(int page, int pageSize, CancellationToken cancellationToken);
     Task CreateStoreAsync(StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default);
     Task UpdateStoreAsync(int storeId, StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default);
     Task DeleteStoreAsync(int storeId, CancellationToken cancellationToken = default);

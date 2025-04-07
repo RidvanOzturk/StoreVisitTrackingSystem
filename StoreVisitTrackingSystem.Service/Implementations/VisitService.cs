@@ -4,7 +4,7 @@ using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Data.Entities.Enums;
 using StoreVisitTrackingSystem.Service.Contracts;
 using StoreVisitTrackingSystem.Service.DTOs;
-using StoreVisitTrackingSystem.Service.Extensions;
+using StoreVisitTrackingSystem.Service.Extensions.Mappers;
 
 namespace StoreVisitTrackingSystem.Service.Implementations;
 
@@ -16,7 +16,7 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
         await trackingContext.Visits.AddAsync(visitEntity, cancellationToken);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
-    public async Task<(List<Visit> Visits, int TotalCount)> GetAllVisitsAsync(int userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PaginationDTO<VisitDTO>> GetAllVisitsAsync(int userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = trackingContext.Visits
             .Include(v => v.Store)
@@ -36,7 +36,11 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
-        return (visits, totalCount);
+        var visitDtos = visits
+            .Select(x => x.Map())
+            .ToList();
+
+        return new PaginationDTO<VisitDTO>(visitDtos, totalCount);
     }
 
 

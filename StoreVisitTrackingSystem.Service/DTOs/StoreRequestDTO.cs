@@ -2,7 +2,6 @@
 
 public record StoreRequestDTO
 (
-    string? Name,
-    string? Location,
-    DateTime CreatedAt 
+    string Name,
+    string Location
 );
