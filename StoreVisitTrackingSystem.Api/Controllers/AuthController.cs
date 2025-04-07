@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
 using StoreVisitTrackingSystem.Api.Models.Requests;
+using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.Contracts;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
@@ -13,13 +14,13 @@ public class AuthController(IUserService userService) : ControllerBase
     public async Task<IActionResult> LoginUser(LoginRequestModel loginRequestModel, CancellationToken cancellationToken)
     {
         var userEntity = loginRequestModel.Map();
-        var user = await userService.LoginUserAsync(userEntity, cancellationToken);
+        var token = await userService.LoginUserAsync(userEntity, cancellationToken);
 
-        if (user == null)
+        if (token == null)
         {
             return BadRequest();
         }
 
-        return Ok(user);
+        return Ok(new { token });
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
 using StoreVisitTrackingSystem.Api.Models.Requests;
 using StoreVisitTrackingSystem.Service.Contracts;
-using StoreVisitTrackingSystem.Service.DTOs;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
 
@@ -46,8 +45,8 @@ public class VisitsController(IVisitService visitService) : ControllerBase
             return NotFound();
         }
 
-        var responseModel = visit.Map();
-        return Ok(responseModel);
+        var response = visit.Map();
+        return Ok(response);
     }
 
     [HttpPost("{visitId}/photos")]
@@ -56,14 +55,14 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         var userId = User.GetUserId();
 
         var photoEntity = photoRequestModel.Map(userId);
-        var isFound = await visitService.AddPhotoToVisitAsync(photoEntity, visitId, cancellationToken);
+        var (isFound, photoId) = await visitService.AddPhotoToVisitAsync(photoEntity, visitId, cancellationToken);
 
         if (!isFound)
         {
             return NotFound();
         }
 
-        return Ok();
+        return Ok(new { photoId });
     }
 
     [HttpPut("{visitId}/complete")]

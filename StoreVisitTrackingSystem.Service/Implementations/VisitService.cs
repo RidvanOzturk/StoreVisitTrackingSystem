@@ -53,21 +53,21 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
         return new PaginationDTO<VisitDTO>(visitDtos, totalCount);
     }
 
-    public async Task<bool> AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
+    public async Task<(bool IsFound, int PhotoId)> AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
     {
         var isVisitExists = await trackingContext.Visits
             .AnyAsync(v => v.Id == visitId && v.UserId == photoRequestDTO.UserId, cancellationToken);
 
         if (!isVisitExists)
         {
-            return false;
+            return (false, 0);
         }
 
         var photoEntity = photoRequestDTO.Map(visitId);
 
         trackingContext.Photos.Add(photoEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
-        return true;
+        return (true, photoEntity.Id);
     }
 
 

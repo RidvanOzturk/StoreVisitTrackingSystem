@@ -8,11 +8,12 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class ProductService(TrackingContext trackingContext) : IProductService
 {
-    public async Task CreateProductAsync(ProductRequestDTO productRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<int> CreateProductAsync(ProductRequestDTO productRequestDTO, CancellationToken cancellationToken = default)
     {
         var product = productRequestDTO.Map();
         trackingContext.Products.Add(product);
         await trackingContext.SaveChangesAsync(cancellationToken);
+        return product.Id;
     }
 
     public async Task<PaginationDTO<ProductDTO>> GetAllProductsAsync(int page, int pageSize, CancellationToken cancellationToken = default)

@@ -15,8 +15,8 @@ public class ProductsController(IProductService productService) : ControllerBase
     public async Task<IActionResult> CreateProduct(ProductRequestModel productRequestModel, CancellationToken cancellationToken)
     {
         var product = productRequestModel.Map();
-        await productService.CreateProductAsync(product, cancellationToken);
-        return Ok();
+        var productId = await productService.CreateProductAsync(product, cancellationToken);
+        return Ok(new { productId });
     }
     
     [Authorize]

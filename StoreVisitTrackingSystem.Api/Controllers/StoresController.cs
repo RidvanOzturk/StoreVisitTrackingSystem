@@ -26,7 +26,7 @@ public class StoresController(IStoreService storeService) : ControllerBase
     {
         var store = storeRequestModel.Map();
         var storeId = await storeService.CreateStoreAsync(store, cancellationToken);
-        return Ok(new {storeId});
+        return Ok(new { storeId });
     }
 
     [Authorize(Roles = "Admin")]
