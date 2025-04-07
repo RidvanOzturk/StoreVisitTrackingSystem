@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StoreVisitTrackingSystem.Api.Extensions;
 using StoreVisitTrackingSystem.Api.Models.Requests;
 using StoreVisitTrackingSystem.Service.Contracts;
+using StoreVisitTrackingSystem.Service.DTOs;
 
 namespace StoreVisitTrackingSystem.Api.Controllers;
 
@@ -28,8 +29,8 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         var userId = User.GetUserId();
 
         var visit = visitRequestModel.Map(userId);
-        await visitService.CreateVisitAsync(visit, cancellationToken);
-        return Ok();
+        var visitId = await visitService.CreateVisitAsync(visit, cancellationToken);
+        return Ok(new { visitId });
     }
 
     [HttpGet("{visitId}")]

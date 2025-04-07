@@ -27,11 +27,12 @@ public class StoreService(TrackingContext trackingContext) : IStoreService
         return new PaginationDTO<StoreDTO>(stores, totalCount);
     }
 
-    public async Task CreateStoreAsync(StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<int> CreateStoreAsync(StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
     {
         var storeEntity = storeRequestDTO.Map();
         trackingContext.Stores.Add(storeEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
+        return storeEntity.Id;
     }
 
     public async Task<bool> UpdateStoreAsync(int storeId, StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)

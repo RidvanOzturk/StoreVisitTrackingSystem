@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"  # Host:3307 → Container:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: fbr19072001-
+      MYSQL_DATABASE: storevisitdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  api:
+    build:
+      context: .
+      dockerfile: StoreVisitTrackingSystem.Api/Dockerfile
+    ports:
+      - "7237:8080"
+    depends_on:
+      - mysql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__StoreVisitContext=Server=mysql;Port=3306;Database=storevisitdb;User=root;Password=fbr19072001-;
+
+volumes:
+  mysql-data:

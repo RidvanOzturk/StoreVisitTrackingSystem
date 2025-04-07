@@ -10,11 +10,12 @@ namespace StoreVisitTrackingSystem.Service.Implementations;
 
 public class VisitService(TrackingContext trackingContext) : IVisitService
 {
-    public async Task CreateVisitAsync(VisitRequestDTO visitRequestDTO, CancellationToken cancellationToken = default)
+    public async Task<int> CreateVisitAsync(VisitRequestDTO visitRequestDTO, CancellationToken cancellationToken = default)
     {
         var visitEntity = visitRequestDTO.Map();
         trackingContext.Visits.Add(visitEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
+        return visitEntity.Id;
     }
     public async Task<PaginationDTO<VisitDTO>> GetAllVisitsAsync(int userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
     {
@@ -51,8 +52,6 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
 
         return new PaginationDTO<VisitDTO>(visitDtos, totalCount);
     }
-
-
 
     public async Task<bool> AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
     {
