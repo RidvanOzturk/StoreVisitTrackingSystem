@@ -21,11 +21,4 @@ public static class StoreMapperExtensions
         targetStore.Location = storeRequestDTO.Location;
         targetStore.CreatedAt = DateTime.UtcNow;
     }
-
-    public static StoreDTO Map(this Store store)
-    {
-        return new StoreDTO(store.Id,
-                            store.Name,
-                            store.Location);
-    }
 }

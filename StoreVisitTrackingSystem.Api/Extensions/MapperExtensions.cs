@@ -2,6 +2,7 @@
 using StoreVisitTrackingSystem.Api.Models.Responses;
 using StoreVisitTrackingSystem.Data.Entities;
 using StoreVisitTrackingSystem.Service.DTOs;
+using StoreVisitTrackingSystem.Service.Extensions.Mappers;
 
 namespace StoreVisitTrackingSystem.Api.Extensions;
 
@@ -29,9 +30,9 @@ public static class MapperExtensions
     {
         return new PhotoRequestDTO
         (
+            userId,
             photoRequestModel.ProductId,
-            photoRequestModel.Base64Image,
-            userId
+            photoRequestModel.Base64Image
         );
     }
 
@@ -82,8 +83,8 @@ public static class MapperExtensions
             photo.Id,
             photo.Base64Image,
             photo.UploadedAt,
-            null
-        ); // TODO
+            photo.Product?.Map()
+        );
     }
 
     public static PagedResponseModel<T> Map<T>(this PaginationDTO<T> pagination)

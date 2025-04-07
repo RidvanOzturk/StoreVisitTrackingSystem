@@ -13,48 +13,62 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
     public async Task CreateVisitAsync(VisitRequestDTO visitRequestDTO, CancellationToken cancellationToken = default)
     {
         var visitEntity = visitRequestDTO.Map();
-        await trackingContext.Visits.AddAsync(visitEntity, cancellationToken);
+        trackingContext.Visits.Add(visitEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
     public async Task<PaginationDTO<VisitDTO>> GetAllVisitsAsync(int userId, bool isAdmin, int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var query = trackingContext.Visits
-            .Include(v => v.Store)
+            .Where(v => isAdmin || v.UserId == userId)
+            .AsNoTracking()
             .Include(v => v.Photos)
-                .ThenInclude(p => p.Product)
-            .AsQueryable();
-
-        if (!isAdmin)
-            query = query.Where(v => v.UserId == userId);
+                .ThenInclude(p => p.Product);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
-        var visits = await query
-            .OrderByDescending(v => v.VisitDate)
+        var visitDtos = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .AsNoTracking()
+            .Select(v => new VisitDTO(
+                v.Id,
+                v.UserId,
+                v.StoreId,
+                v.VisitDate,
+                v.Status.ToString(),
+                v.Store == null
+                    ? null
+                    : new StoreDTO(v.Store.Id, v.Store.Name, v.Store.Location),
+                v.Photos.Select(p => new PhotoDTO(
+                    p.Id,
+                    p.Base64Image,
+                    p.UploadedAt,
+                    p.Product == null
+                        ? null
+                        : new ProductDTO(p.Product.Id, p.Product.Name, p.Product.Category)
+                )).ToList()
+            ))
             .ToListAsync(cancellationToken);
-
-        var visitDtos = visits
-            .Select(x => x.Map())
-            .ToList();
 
         return new PaginationDTO<VisitDTO>(visitDtos, totalCount);
     }
 
 
-    public async Task AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
+
+    public async Task<bool> AddPhotoToVisitAsync(PhotoRequestDTO photoRequestDTO, int visitId, CancellationToken cancellationToken = default)
     {
-        var visit = await trackingContext.Visits
-            .FirstOrDefaultAsync(v => v.Id == visitId, cancellationToken);
-        if (visit == null || visit.UserId != photoRequestDTO.UserId)
+        var isVisitExists = await trackingContext.Visits
+            .AnyAsync(v => v.Id == visitId && v.UserId == photoRequestDTO.UserId, cancellationToken);
+
+        if (!isVisitExists)
         {
-            throw new UnauthorizedAccessException("Visit not found or not yours.");
+            return false;
         }
-        var photoEntity = photoRequestDTO.Map(visitId); 
-        await trackingContext.Photos.AddAsync(photoEntity, cancellationToken);
+
+        var photoEntity = photoRequestDTO.Map(visitId);
+
+        trackingContext.Photos.Add(photoEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
 
@@ -67,23 +81,27 @@ public class VisitService(TrackingContext trackingContext) : IVisitService
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.Id == visitId, cancellationToken);
 
-        if (visit == null)
+        if (visit == null || (!isAdmin && visit.UserId != userId))
+        {
             return null;
-
-        if (!isAdmin && visit.UserId != userId)
-            return null;
+        }
 
         return visit;
     }
 
-    public async Task CompleteVisitAsync(int visitId, CancellationToken cancellationToken = default)
+    public async Task<bool> CompleteVisitAsync(int visitId, CancellationToken cancellationToken = default)
     {
         var visit = await trackingContext.Visits
             .FirstOrDefaultAsync(x => x.Id == visitId, cancellationToken);
-        if (visit != null)
+
+        if (visit == null)
         {
-            visit.Status = VisitStatus.Completed;
-            await trackingContext.SaveChangesAsync(cancellationToken);
+            return false;
         }
+
+        visit.Status = VisitStatus.Completed;
+        await trackingContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

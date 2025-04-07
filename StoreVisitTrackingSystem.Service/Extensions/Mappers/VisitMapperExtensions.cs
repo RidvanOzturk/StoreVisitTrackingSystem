@@ -16,13 +16,4 @@ public static class VisitMapperExtensions
             Status = VisitStatus.InProgress
         };
     }
-
-    public static VisitDTO Map(this Visit visit)
-    {
-        return new VisitDTO(visit.Id,
-                            visit.UserId,
-                            visit.StoreId,
-                            visit.VisitDate,
-                            visit.Status.ToString());
-    }
 }

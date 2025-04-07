@@ -6,5 +6,7 @@ public record VisitDTO
    int UserId,
    int StoreId, 
    DateTime VisitDate,
-   string Status
+   string Status,
+   StoreDTO? StoreDetail,
+   List<PhotoDTO> PhotoDetails
 );

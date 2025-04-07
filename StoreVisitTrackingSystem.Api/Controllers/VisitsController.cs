@@ -39,7 +39,7 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         var isAdmin = User.IsAdmin();
 
         var visit = await visitService.GetVisitByIdAsync(visitId, userId, isAdmin, cancellationToken);
-        
+
         if (visit == null)
         {
             return NotFound();
@@ -55,7 +55,13 @@ public class VisitsController(IVisitService visitService) : ControllerBase
         var userId = User.GetUserId();
 
         var photoEntity = photoRequestModel.Map(userId);
-        await visitService.AddPhotoToVisitAsync(photoEntity, visitId, cancellationToken);
+        var isFound = await visitService.AddPhotoToVisitAsync(photoEntity, visitId, cancellationToken);
+
+        if (!isFound)
+        {
+            return NotFound();
+        }
+
         return Ok();
     }
 

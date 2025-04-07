@@ -7,5 +7,5 @@ public record PhotoResponseModel
     int Id,
     string? Base64Image,
     DateTime UploadedAt,
-    PagedResponseModel<ProductDTO>? Product
+    ProductDTO? Product
 );

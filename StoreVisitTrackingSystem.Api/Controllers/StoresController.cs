@@ -31,15 +31,23 @@ public class StoresController(IStoreService storeService) : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{storeId}")]
-    public async Task <IActionResult> UpdateStore(int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateStore(int storeId, StoreRequestModel storeRequestModel, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
+
         if (!isStoreExist)
         {
             return NotFound();
         }
+
         var store = storeRequestModel.Map();
-        await storeService.UpdateStoreAsync(storeId, store, cancellationToken);
+        var isFound = await storeService.UpdateStoreAsync(storeId, store, cancellationToken);
+
+        if (!isFound)
+        {
+            return NotFound();
+        }
+
         return Ok();
     }
 
@@ -48,11 +56,19 @@ public class StoresController(IStoreService storeService) : ControllerBase
     public async Task<IActionResult> DeleteStore(int storeId, CancellationToken cancellationToken)
     {
         var isStoreExist = await storeService.IsStoreExistAsync(storeId, cancellationToken);
+
         if (!isStoreExist)
         {
             return NotFound();
         }
-        await storeService.DeleteStoreAsync(storeId, cancellationToken);
+
+        var isFound = await storeService.DeleteStoreAsync(storeId, cancellationToken);
+
+        if (!isFound)
+        {
+            return NotFound();
+        }
+
         return Ok();
     }
 

@@ -17,44 +17,53 @@ public class StoreService(TrackingContext trackingContext) : IStoreService
         var stores = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(x => new StoreDTO(
+                x.Id,
+                x.Name,
+                x.Location
+                ))
             .ToListAsync(cancellationToken);
 
-        var storeDtos = stores
-            .Select(x => x.Map())
-            .ToList();
-
-        return new PaginationDTO<StoreDTO>(storeDtos, totalCount);
+        return new PaginationDTO<StoreDTO>(stores, totalCount);
     }
+
     public async Task CreateStoreAsync(StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
     {
         var storeEntity = storeRequestDTO.Map();
         trackingContext.Stores.Add(storeEntity);
         await trackingContext.SaveChangesAsync(cancellationToken);
     }
-    public async Task UpdateStoreAsync(int storeId, StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
+
+    public async Task<bool> UpdateStoreAsync(int storeId, StoreRequestDTO storeRequestDTO, CancellationToken cancellationToken = default)
     {
         var updateStore = await trackingContext.Stores.FirstOrDefaultAsync(x => x.Id == storeId, cancellationToken);
-        
+
         if (updateStore is null)
         {
-            throw new Exception("Store not found.");
+            return false;
         }
 
         storeRequestDTO.Update(updateStore);
         await trackingContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
-    public async Task DeleteStoreAsync(int storeId, CancellationToken cancellationToken = default)
+
+    public async Task<bool> DeleteStoreAsync(int storeId, CancellationToken cancellationToken = default)
     {
         var store = await trackingContext.Stores.FirstOrDefaultAsync(x => x.Id == storeId, cancellationToken);
-        
+
         if (store is null)
         {
-            throw new InvalidOperationException("Store not found.");
+            return false;
         }
 
         trackingContext.Remove(store);
         await trackingContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
+
     public async Task<bool> IsStoreExistAsync(int storeId, CancellationToken cancellationToken = default)
     {
         return await trackingContext.Stores.AnyAsync(x => x.Id == storeId, cancellationToken);
