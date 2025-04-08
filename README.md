@@ -44,96 +44,90 @@ Swagger UI is integrated to visualize and test the API endpoints easily.
   
 ## API Endpoints
 
-### User Management
+### 🧑‍💼 User Management
 
-#### Logs in the user and returns a JWT token.
-
-```http
-  POST /api/auth/login
-```
----
-
-### Store Management
-
-#### List All Stores.
+#### Logs in the user and returns a JWT token
 
 ```http
-  GET /api/stores
-```
-
-#### Creates a new store (Admin only).
-
-```http
-  POST /api/stores
-```
-
-#### Updates a store (Admin only).
-
-```http
-  POST /api/stores/{storeId}
-```
-
-#### Deletes a store (Admin only).
-
-```http
-  DELETE /api/stores/{storeId}
+POST /api/auth
 ```
 
 ---
 
-### Product Management
+### 🏪 Store Management
+
+#### List all stores
+
+```http
+GET /api/stores
+```
+
+#### Creates a new store (Admin only)
+
+```http
+POST /api/stores
+```
+
+#### Updates a store (Admin only)
+
+```http
+PUT /api/stores/{storeId}
+```
+
+#### Deletes a store (Admin only)
+
+```http
+DELETE /api/stores/{storeId}
+```
+
+---
+
+### 📦 Product Management
 
 #### Lists all products. Standard users can only list products inside a store.
 
 ```http
-  GET /api/products
+GET /api/products
 ```
 
-#### Adds a new product (Admin only).
+#### Adds a new product (Admin only)
 
 ```http
-  POST /api/products
+POST /api/products
 ```
 
 ---
 
-### Visit Management
+### 📋 Visit Management
 
-#### List All Visits.(Standard user can only see their own visits.)
-
+#### List all visits (Standard user can only see their own)
 
 ```http
-  GET /api/visits
+GET /api/visits
 ```
 
-
-#### Creates a new store visit. Default status is InProgress. (Auth required)
-
+#### Creates a new store visit. Default status is InProgress
 
 ```http
-  POST /api/visits
+POST /api/visits
 ```
 
-
-#### Gets details of a visit. Standard users can access only their own. (Auth required)
-
+#### Gets details of a visit
 
 ```http
-  GET /api/visits/{visitId}
+GET /api/visits/{visitId}
 ```
 
-
-#### Uploads a product photo for a visit. Requires photo (Base64) and product info. (Auth required)
+#### Uploads a product photo (Base64) for a visit
 
 ```http
-  POST /api/visits/{visitId}/photos
+POST /api/visits/{visitId}/photos
 ```
 
-
-#### Marks the visit as Completed. (Auth required)
+#### Marks the visit as Completed
 
 ```http
-  PUT /api/visits/{visitId}/complete
+PUT /api/visits/{visitId}/complete
 ```
 
 
