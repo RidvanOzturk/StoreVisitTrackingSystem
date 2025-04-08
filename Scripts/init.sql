@@ -48,6 +48,15 @@ CREATE TABLE storevisitdb.Photos (
     FOREIGN KEY (ProductId) REFERENCES storevisitdb.Products(Id) ON DELETE CASCADE
 );
 
+-- Visit
+CREATE INDEX idx_visits_userid ON storevisitdb.Visits(UserId);
+
+-- Visit  -> Photos 
+CREATE INDEX idx_photos_visitid ON storevisitdb.Photos(VisitId);
+
+-- Photos  -> Products 
+CREATE INDEX idx_photos_productid ON storevisitdb.Photos(ProductId);
+
 -- Insert 1,000 Users (50 Admins, 950 Standard)
 INSERT INTO storevisitdb.Users (Username, Role)
 SELECT CONCAT('user', ROW_NUMBER() OVER()),
