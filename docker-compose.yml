@@ -1,3 +1,5 @@
+version: "2.4"
+
 services:
   api:
     build:
@@ -10,7 +12,7 @@ services:
         condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__StoreVisitContext=Server=mysql;Port=3306;Database=storevisitdb;User=root;Password=fbr19072001-;
+      - ConnectionStrings__StoreVisitContext=Server=mysql;Port=3306;Database=storevisitdb;User=root;Password=fbr19072001-
 
   mysql:
     image: mysql:8.0
@@ -23,7 +25,7 @@ services:
       - mysql-data:/var/lib/mysql
       - ./Scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pfbr19072001-"]
       interval: 10s
       timeout: 5s
       retries: 5
