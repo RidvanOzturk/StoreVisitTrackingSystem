@@ -1,7 +1,10 @@
 # Store Visit Tracking System
 
 
-StoreVisitTrackingSystem is a Web API project developed on the .NET 8 platform. This system allows store visits to be tracked digitally. Standard users can initiate a visit (with initial status set to "InProgress"), upload related product photos during the visit, and mark the visit as "Completed" at the end. The project includes JWT-based authentication and advanced user role management with Admin and Standard roles.
+StoreVisitTrackingSystem is a Web API project developed on the .NET 8 platform. This system allows store visits to be tracked digitally.
+Standard users can initiate a visit (with initial status set to "InProgress"), upload related product photos during the visit, and mark the visit as "Completed" at the end. 
+The project includes JWT-based authentication and advanced user role management with Admin and Standard roles.
+
 ## Technologies Used
 
 - .NET 8 (ASP.NET Core Web API): Main framework of the project.
@@ -16,7 +19,7 @@ StoreVisitTrackingSystem is a Web API project developed on the .NET 8 platform. 
 ### Option 1: Running with Docker Compose
 
 - Clone the Repository:
-  * `git clone https://github.com/yourusername/StoreVisitTrackingSystem.git`
+  * `git clone https://github.com/RidvanOzturk/StoreVisitTrackingSystem.git`
 
 - Navigate to Directory:
   * `cd StoreVisitTrackingSystem`
